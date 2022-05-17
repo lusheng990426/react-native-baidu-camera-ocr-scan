@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res"/><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/build/generated/res/rs/debug"/><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res"><file name="bd_ocr_crop" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/layout/bd_ocr_crop.xml" qualifiers="" type="layout"/><file name="bd_ocr_activity_camera" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/layout/bd_ocr_activity_camera.xml" qualifiers="" type="layout"/><file name="bd_ocr_confirm_result" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/layout/bd_ocr_confirm_result.xml" qualifiers="" type="layout"/><file name="bd_ocr_take_picture" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/layout/bd_ocr_take_picture.xml" qualifiers="" type="layout"/><file name="activity_qrcode" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/layout/activity_qrcode.xml" qualifiers="" type="layout"/><file path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/values/bd_ocr_dimensions.xml" qualifiers=""><dimen name="camera_left_margin">18dp</dimen><dimen name="camera_right_margin">18dp</dimen><dimen name="camera_bottom_margin">16dp</dimen><dimen name="camera_top_margin">16dp</dimen></file><file path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/values/colors.xml" qualifiers=""><color name="colorPrimary">#3F51B5</color><color name="colorPrimaryDark">#4CAF50</color><color name="colorAccent">#FF4081</color></file><file path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/values/styles_base.xml" qualifiers=""><style name="WrapMatch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+    </style><style name="MatchWrap">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style><style name="WrapWrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style><style name="MatchMatch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style><style name="MatchAuto">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">0dp</item>
+    </style><style name="AutoMatch">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+    </style><style name="WrapAuto">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">0dp</item>
+    </style><style name="AutoWrap">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style><style name="WrapMatch.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="WrapMatch.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="MatchWrap.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="MatchWrap.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="WrapWrap.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="WrapWrap.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="MatchMatch.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="MatchMatch.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="MatchAuto.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="MatchAuto.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="AutoMatch.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="AutoMatch.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="WrapAuto.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="WrapAuto.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="AutoWrap.Vertical">
+        <item name="android:orientation">vertical</item>
+    </style><style name="AutoWrap.Horizontal">
+        <item name="android:orientation">horizontal</item>
+    </style><style name="MatchOne">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+    </style><style name="OneMatch">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+    </style></file><file path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/values/bd_ocr_widgets.xml" qualifiers=""><declare-styleable name="OCRCameraLayout">
+        <attr format="reference" name="contentView"/>
+        <attr format="reference" name="centerView"/>
+        <attr format="reference" name="leftDownView"/>
+        <attr format="reference" name="rightUpView"/>
+    </declare-styleable></file><file path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/values/strings.xml" qualifiers=""><string name="app_name">OCR_UI</string><string name="camera_permission_required">本功能需要相机权限！</string></file><file name="bd_ocr_reset" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_reset.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_hint_align_id_card_back" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_hint_align_id_card_back.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_take_photo_normal" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_take_photo_normal.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_id_card_locator_front" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_id_card_locator_front.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_hint_align_bank_card" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_hint_align_bank_card.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_id_card_locator_back" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_id_card_locator_back.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_take_photo_selector" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_take_photo_selector.xml" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_cancel" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_cancel.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_rotate" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_rotate.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_gallery" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_gallery.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_light_off" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_light_off.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_light_on" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_light_on.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_hint_align_id_card" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_hint_align_id_card.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_take_photo_highlight" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_take_photo_highlight.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_close" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_close.png" qualifiers="xhdpi-v4" type="drawable"/><file name="a65" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/a65.png" qualifiers="xhdpi-v4" type="drawable"/><file name="pop" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/pop.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_round_corner" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_round_corner.xml" qualifiers="xhdpi-v4" type="drawable"/><file name="custom_scan_line" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/custom_scan_line.png" qualifiers="xhdpi-v4" type="drawable"/><file name="custom_grid_scan_line" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/custom_grid_scan_line.png" qualifiers="xhdpi-v4" type="drawable"/><file name="bd_ocr_confirm" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/drawable-xhdpi/bd_ocr_confirm.png" qualifiers="xhdpi-v4" type="drawable"/><file name="file_provider_paths" path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/main/res/xml/file_provider_paths.xml" qualifiers="" type="xml"/></source><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/build/generated/res/rs/debug"/><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/hluk/imetric/bhxf/igov.mobile/node_modules/react-native-baidu-camera-ocr-scan/android/src/debug/res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="OCRCameraLayout">
+        <attr format="reference" name="contentView"/>
+        <attr format="reference" name="centerView"/>
+        <attr format="reference" name="leftDownView"/>
+        <attr format="reference" name="rightUpView"/>
+    </declare-styleable></configuration></mergedItems></merger>

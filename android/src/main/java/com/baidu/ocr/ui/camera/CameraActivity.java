@@ -1,7 +1,10 @@
 package com.baidu.ocr.ui.camera;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,10 +15,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -23,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.baidu.BaiDuOcrModule;
+import com.baidu.FileUtil;
 import com.baidu.MiddleReceiver;
 import com.baidu.idcardquality.IDcardQualityProcess;
 import com.baidu.R;
@@ -230,16 +236,16 @@ public class CameraActivity extends Activity {
         @Override
         public void onClick(View v) {
 
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    ActivityCompat.requestPermissions(CameraActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PERMISSIONS_EXTERNAL_STORAGE);
-                    return;
-                }
-            }
-            Intent intent = new Intent(Intent.ACTION_PICK);
+//            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    ActivityCompat.requestPermissions(CameraActivity.this,
+//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                            PERMISSIONS_EXTERNAL_STORAGE);
+//                    return;
+//                }
+//            }
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
         }
@@ -399,6 +405,8 @@ public class CameraActivity extends Activity {
     };
 
     private String getRealPathFromURI(Uri contentURI) {
+
+
         String result;
         Cursor cursor = null;
         try {
@@ -406,6 +414,8 @@ public class CameraActivity extends Activity {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+
+
         if (cursor == null) {
             result = contentURI.getPath();
         } else {
@@ -416,6 +426,9 @@ public class CameraActivity extends Activity {
         }
         return result;
     }
+
+
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -456,8 +469,9 @@ public class CameraActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PICK_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
+
                 Uri uri = data.getData();
-                cropView.setFilePath(getRealPathFromURI(uri));
+                cropView.setFilePath(FileUtil.getImageAbsolutePath(this,uri));
                 showCrop();
             } else {
                 cameraView.getCameraControl().resume();

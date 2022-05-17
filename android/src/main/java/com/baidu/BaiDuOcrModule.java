@@ -19,8 +19,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -40,6 +40,10 @@ import com.baidu.ocr.sdk.model.OcrResponseResult;
 import com.baidu.ocr.ui.camera.CameraActivity;
 import com.baidu.ocr.ui.camera.CameraNativeHelper;
 import com.baidu.ocr.ui.camera.CameraView;
+import com.baidu.permission.MPermission;
+import com.baidu.permission.annotation.OnMPermissionDenied;
+import com.baidu.permission.annotation.OnMPermissionGranted;
+import com.baidu.permission.annotation.OnMPermissionNeverAskAgain;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -55,9 +59,12 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,6 +76,7 @@ import cn.bingoogolapple.qrcode.core.BGAQRCodeUtil;
 import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder;
 
 public class BaiDuOcrModule extends ReactContextBaseJavaModule {
+    final static int BASIC_PERMISSION_REQUEST_CODE = 100;
     static public BaiDuOcrModule myBaiDuOcrModule;
     private static final String SD_PATH = "/sdcard/dskqxt/pic/";
     private static final String IN_PATH = "/dskqxt/pic/";
@@ -149,6 +157,7 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
             }
             else if(requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK){
 
+                //相机
                 if(isCamera.equals(true)){
                     isCamera = false;
                     String filePath = getRealPathFromURI(photoUri);
@@ -156,9 +165,10 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
                     defaultReturn(filePath,1);
                 }
 
+                //相册
                 if (data != null) {
                     Uri uri = data.getData();
-                    String filePath = getRealPathFromURI(uri);
+                    String filePath = FileUtil.getImageAbsolutePath(getReactApplicationContext(),uri);
                     Log.d("momo",filePath);
                     defaultReturn(filePath,0);
                 }
@@ -252,7 +262,32 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void callOcr(String type){
 
+        Log.d("momo","callOcr");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    ) {
+
+                callOcrFunation(type);
+
+            }else{
+                requestBasicPermission();
+            }
+
+        } else {
+            callOcrFunation(type);
+        }
+
+
+    }
+
+
+    private void callOcrFunation(String type){
         Intent intent = new Intent(getCurrentActivity(), CameraActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH,
                 FileUtil.getSaveFile(getReactApplicationContext()).getAbsolutePath());
 
@@ -291,20 +326,31 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void callQRCode(){
 
+        Log.d("momo","callQRCode");
 
-        if (ActivityCompat.checkSelfPermission(getReactApplicationContext(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ActivityCompat.requestPermissions(getCurrentActivity(),
-                        new String[]{Manifest.permission.CAMERA},
-                        800);
-                return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    ) {
+
+                Intent intent = new Intent(getCurrentActivity(), QRCodeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                getCurrentActivity().startActivityForResult(intent, REQUEST_QR_CODE);
+
+            }else{
+                requestBasicPermission();
             }
+
+        } else {
+
+            Intent intent = new Intent(getCurrentActivity(), QRCodeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            getCurrentActivity().startActivityForResult(intent, REQUEST_QR_CODE);
+
         }
-
-        Intent intent = new Intent(getCurrentActivity(), QRCodeActivity.class);
-
-        getCurrentActivity().startActivityForResult(intent, REQUEST_QR_CODE);
 
     }
 
@@ -380,45 +426,82 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void callCamera(){
 
-        if (ActivityCompat.checkSelfPermission(getReactApplicationContext(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ActivityCompat.requestPermissions(getCurrentActivity(),
-                        new String[]{Manifest.permission.CAMERA},
-                        800);
-                return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    ) {
+
+                SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                filename = timeStampFormat.format(new Date());
+                ContentValues values = new ContentValues(); //使用本地相册保存拍摄照片
+                values.put(MediaStore.Images.Media.TITLE, filename);
+                photoUri = getReactApplicationContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                isCamera = true;
+//        intent.setType("image/*");
+                getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
+
+
+            }else{
+                requestBasicPermission();
             }
+
+        } else {
+
+            SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            filename = timeStampFormat.format(new Date());
+            ContentValues values = new ContentValues(); //使用本地相册保存拍摄照片
+            values.put(MediaStore.Images.Media.TITLE, filename);
+            photoUri = getReactApplicationContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            isCamera = true;
+//        intent.setType("image/*");
+            getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
+
         }
 
-        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        filename = timeStampFormat.format(new Date());
-        ContentValues values = new ContentValues(); //使用本地相册保存拍摄照片
-        values.put(MediaStore.Images.Media.TITLE, filename);
-        photoUri = getReactApplicationContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        isCamera = true;
-//        intent.setType("image/*");
-        getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
 
     }
 
     @ReactMethod
     public void callAlbum(){
 
-        if (ActivityCompat.checkSelfPermission(getReactApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ActivityCompat.requestPermissions(getCurrentActivity(),
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        801);
-                return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (
+                    getCurrentActivity().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                            getCurrentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    ) {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                intent.setType("image/*");
+                getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
+
+
+            }else{
+                requestBasicPermission();
             }
+
+        } else {
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.setType("image/*");
+            getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
+
         }
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        getCurrentActivity().startActivityForResult(intent, REQUEST_CAMERA);
 
     }
 
@@ -466,11 +549,14 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
     //默认返回
     private void defaultReturn(String filePath,int type){
 
-        Bitmap image = BitmapFactory.decodeFile(filePath);//filePath
+
 
         Log.d("momo","filePath="+filePath);
         String path = compressImage(filePath,getReactApplicationContext(), type ,true);
         Log.d("momo","path="+path);
+
+//        Log.d("momo",String.valueOf(file.length()));
+
 
         WritableMap params = Arguments.createMap();
         params.putString("type","DEFAULT");
@@ -480,15 +566,6 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
 
     }
 
-    private static String getFixLenthString(int strLength) {
-        Random rm = new Random();
-        // 获得随机数
-        double pross = (1 + rm.nextDouble()) * Math.pow(10, strLength);
-        // 将获得的获得随机数转化为字符串
-        String fixLenthString = String.valueOf(pross);
-        // 返回固定的长度的随机数
-        return fixLenthString.substring(2, strLength + 1);
-    }
 
     /**
      * 根据图片路径压缩图片并返回压缩后图片的路径
@@ -497,46 +574,94 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
      * @return
      */
     public String compressImage(String mCurrentPhotoPath, Context context,int type, boolean isCompression) {
-
         if (mCurrentPhotoPath != null) {
 
-            try {
-                File f = new File(mCurrentPhotoPath);
-                Bitmap old_bm = getSmallBitmap(mCurrentPhotoPath);
-                Bitmap bm = old_bm;
-                if(type ==1){
-                    bm = rotateBitmap(old_bm,90);
+
+            File f = new File(mCurrentPhotoPath);
+            File cacheDir = context.getCacheDir();
+
+            File newfile = new File( cacheDir, "small_" + f.getName());
+            try{
+                if (!newfile.exists()) {
+                    newfile.getParentFile().mkdirs();
+                    newfile.createNewFile();
                 }
 
-                //获取文件路径 即：/data/data/***/files目录下的文件
-                String path = context.getFilesDir().getPath();
-//                Log.e(TAG, "compressImage:path== "+path );
-                //获取缓存路径
-                File cacheDir = context.getCacheDir();
-//                Log.e(TAG, "compressImage:cacheDir== "+cacheDir );
-//                File newfile = new File(
-//                getAlbumDir(), "small_" + f.getName());
-                File newfile = new File(
-                        cacheDir, "small_" + f.getName());
-                FileOutputStream fos = new FileOutputStream(newfile);
-                if(isCompression){
-                    bm.compress(Bitmap.CompressFormat.JPEG, 60, fos);
-                }else{
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                }
+                String newPath = FileUtil.getimage(mCurrentPhotoPath,newfile);
 
+                return newPath;
 
-                return newfile.getPath();
-
-            } catch (Exception e) {
-                Log.e("momo", "error", e);
+            }catch (Exception e){
+                return "";
             }
+
+
+
 
         } else {
             Log.e("momo", "save: 图片路径为空");
         }
         return mCurrentPhotoPath;
     }
+
+
+//    /**
+//     * 根据图片路径压缩图片并返回压缩后图片的路径
+//     * @param mCurrentPhotoPath
+//     * @param context
+//     * @return
+//     */
+//    public String compressImage(String mCurrentPhotoPath, Context context,int type, boolean isCompression) {
+//
+//        if (mCurrentPhotoPath != null) {
+//
+//            int orientation = FileUtil.readPictureDegree(pictureInfo.getUrl());//获取旋转角度
+//            Bitmap bitmap = FileUtil.getimage(pictureInfo.getUrl());//压缩图片
+//            if(Math.abs(orientation) > 0){
+//                bitmap =  FileUtil.rotaingImageView(orientation, bitmap);//旋转图片
+//            }
+//
+//
+//
+//            try {
+//                File f = new File(mCurrentPhotoPath);
+//                Bitmap bm = getSmallBitmap(mCurrentPhotoPath);
+//                if(type ==1){
+//                    bm = rotateBitmap(bm,90);
+//                }
+//
+//                //获取文件路径 即：/data/data/***/files目录下的文件
+////                String path = context.getFilesDir().getPath();
+////                Log.e(TAG, "compressImage:path== "+path );
+//                //获取缓存路径
+//                File cacheDir = context.getCacheDir();
+////                Log.e(TAG, "compressImage:cacheDir== "+cacheDir );
+////                File newfile = new File(
+////                getAlbumDir(), "small_" + f.getName());
+//                File newfile = new File(
+//                        cacheDir, "small_" + f.getName());
+//
+//                FileOutputStream fos = new FileOutputStream(newfile);
+//
+//                bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+////                if(isCompression){
+////                    bm.compress(Bitmap.CompressFormat.JPEG, 60, fos);
+////                }else{
+//// bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+////                }
+//
+//
+//                return newfile.getPath();
+//
+//            } catch (Exception e) {
+//                Log.e("momo", "error", e);
+//            }
+//
+//        } else {
+//            Log.e("momo", "save: 图片路径为空");
+//        }
+//        return mCurrentPhotoPath;
+//    }
 
     /**
      * 根据路径获得突破并压缩返回bitmap用于显示
@@ -545,17 +670,32 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
      * @return
      */
     public static Bitmap getSmallBitmap(String filePath) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
+//        final BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(filePath, options);
+//
+//        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+//
+//        options.inJustDecodeBounds = false;
+          Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+        return zoomImg(bitmap, 480,800);
+    }
 
-        options.inJustDecodeBounds = false;
-
-
-
-        return BitmapFactory.decodeFile(filePath, options);
+    // 缩放图片
+    public static Bitmap zoomImg(Bitmap bm, int newWidth ,int newHeight){
+        // 获得图片的宽高
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        // 计算缩放比例
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 取得想要缩放的matrix参数
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 得到新的图片
+        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+        return newbm;
     }
 
     /**
@@ -1153,7 +1293,7 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
                     params.putString("filePath", "file://" + path);
                     params.putString("cardNum",(!TextUtils.isEmpty(result.getBankCardNumber()) ? result.getBankCardNumber() : ""));
                     params.putString("cardType",type);
-                    params.putString("cardname",(!TextUtils.isEmpty(result.getBankName()) ? result.getBankName() : ""));
+                    params.putString("cardName",(!TextUtils.isEmpty(result.getBankName()) ? result.getBankName() : ""));
 
                     sendEvent(getReactApplicationContext(), "BaiDuOcrEmitter", params);
 
@@ -1315,6 +1455,34 @@ public class BaiDuOcrModule extends ReactContextBaseJavaModule {
     }
 
 
+    /**
+     * 基本权限管理
+     */
+    private final String[] BASIC_PERMISSIONS = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+    };
 
+    private void requestBasicPermission() {
+        MPermission.printMPermissionResult(true, getCurrentActivity(), BASIC_PERMISSIONS);
+        MPermission.with(getCurrentActivity())
+                .setRequestCode(BASIC_PERMISSION_REQUEST_CODE)
+                .permissions(BASIC_PERMISSIONS)
+                .request();
+    }
+
+    @OnMPermissionGranted(BASIC_PERMISSION_REQUEST_CODE)
+    public void onBasicPermissionSuccess() {
+        Toast.makeText(getCurrentActivity(), "授权成功", Toast.LENGTH_SHORT).show();
+        MPermission.printMPermissionResult(false, getCurrentActivity(), BASIC_PERMISSIONS);
+    }
+
+    @OnMPermissionDenied(BASIC_PERMISSION_REQUEST_CODE)
+    @OnMPermissionNeverAskAgain(BASIC_PERMISSION_REQUEST_CODE)
+    public void onBasicPermissionFailed() {
+        Toast.makeText(getCurrentActivity(), "未全部授权，部分功能可能无法正常运行！", Toast.LENGTH_SHORT).show();
+        MPermission.printMPermissionResult(false, getCurrentActivity(), BASIC_PERMISSIONS);
+    }
 
 }
